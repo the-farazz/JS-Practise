@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visitor Counter</title>
+</head>
+<body>
+    <script>
+        // Function to check if Web Storage is supported by the browser
+        function isWebStorageSupported() {
+            try {
+                const testKey = "test";
+                localStorage.setItem(testKey, testKey);
+                localStorage.removeItem(testKey);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Function to update and display the visit count
+        function updateVisitCount() {
+            if (isWebStorageSupported()) {
+                // Check if the visitCount variable is already stored in localStorage
+                let visitCount = localStorage.getItem("visitCount");
+
+                if (visitCount) {
+                    // If it exists, increment it and update the localStorage
+                    visitCount = parseInt(visitCount) + 1;
+                    localStorage.setItem("visitCount", visitCount);
+                } else {
+                    // If it doesn't exist, set it to 1
+                    localStorage.setItem("visitCount", 1);
+                }
+
+                // Display the visit count on the page
+                document.write("You have visited this page " + localStorage.getItem("visitCount") + " times.");
+            } else {
+                // If Web Storage is not supported, use cookies as a fallback solution
+                let visitCount = parseInt(getCookie("visitCount"));
+                if (isNaN(visitCount)) {
+                    visitCount = 1;
+                } else {
+                    visitCount++;
+                }
+                setCookie("visitCount", visitCount);
+                document.write("You have visited this page " + visitCount + " times.");
+            }
+        }
+
+        // Helper function to get the value of a cookie
+        function getCookie(name) {
+            const value = "; " + document.cookie;
+            const parts = value.split("; " + name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        // Helper function to set a cookie
+        function setCookie(name, value) {
+            document.cookie = name + "=" + value + "; path=/";
+        }
+
+        // Call the updateVisitCount function when the page loads
+        updateVisitCount();
+    </script>
+</body>
+</html>
